@@ -11,10 +11,25 @@ import { GetDevicesService } from './data-services/get-devices.service';
 import { DeviceTypeFilterChangedEventService } from './event-services/device-type-filter-changed-event.service';
 import { SelectedDevicesService } from './use-cases/select-device/selected-devices.service';
 import { NetworkRoutingModule } from './network-router.module';
+import { NetworkNavigationService } from './network-navigation.service';
 
 @NgModule({
-  declarations: [NetworkComponent, FilterDevicesComponent, SelectDeviceComponent, ShowDevicesComponent, ShowSelectedDevicesComponent],
-  imports: [CommonModule, NetworkRoutingModule],
-  providers: [SelectedDevicesService, GetDevicesApiService, GetDevicesService, DeviceTypeFilterChangedEventService]
+  declarations: [
+    NetworkComponent,
+    FilterDevicesComponent,
+    SelectDeviceComponent,
+    ShowDevicesComponent,
+    ShowSelectedDevicesComponent
+  ],
+  imports: [
+    CommonModule,
+    NetworkRoutingModule
+  ],
+  providers: [
+    SelectedDevicesService,
+    GetDevicesApiService,
+    GetDevicesService,
+    DeviceTypeFilterChangedEventService,
+    NetworkNavigationService],
 })
 export class NetworkModule { }

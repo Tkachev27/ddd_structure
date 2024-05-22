@@ -1,5 +1,15 @@
 import { Observable, of } from 'rxjs';
 
+export interface Device {
+  model: string;
+  ip: string;
+}
+
+export interface DeviceRequest {
+  count: number;
+  filter: string | null;
+}
+
 export const DeviceTypes = ['ESR', 'MES', 'ME', 'SMG', 'WLC'];
 
 function getRandomIp(): string {
@@ -18,17 +28,13 @@ function getRandomModel(filter: string | null): string {
   return DeviceTypes[index];
 }
 
-export interface Device {
-  model: string;
-  ip: string;
-}
 
-export function getDevices(count: number, filter: string | null): Observable<Device[]> {
+export function getDevices(request: DeviceRequest): Observable<Device[]> {
   const deviceArr = [];
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < request.count; i++) {
     deviceArr.push({
       ip: getRandomIp(),
-      model: getRandomModel(filter),
+      model: getRandomModel(request.filter),
     });
   }
 

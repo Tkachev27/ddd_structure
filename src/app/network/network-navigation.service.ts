@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-@Injectable({providedIn: 'root'})
-export class SomePageNavigationService {
+@Injectable()
+export class NetworkNavigationService {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
 }

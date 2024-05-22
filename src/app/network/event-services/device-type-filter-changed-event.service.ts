@@ -4,14 +4,14 @@ import { Observable, ReplaySubject } from 'rxjs';
 @Injectable()
 export class DeviceTypeFilterChangedEventService {
 
-  private _deviceTypeFilterChangedEvent = new ReplaySubject<void>(1);
+  private _deviceTypeFilterChangedEvent = new ReplaySubject<string>(1);
 
-  deviceTypeFilterChangedEvent$: Observable<void> = this._deviceTypeFilterChangedEvent.asObservable();
+  deviceTypeFilterChangedEvent$: Observable<string> = this._deviceTypeFilterChangedEvent.asObservable();
 
   constructor() { }
 
-  emit(): void {
-    this._deviceTypeFilterChangedEvent.next();
+  emit(filter: string | null): void {
+    this._deviceTypeFilterChangedEvent.next(filter);
   }
 
 }
