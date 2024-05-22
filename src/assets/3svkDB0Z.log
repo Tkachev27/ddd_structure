@@ -1,0 +1,245 @@
+
+Copy project to tmp directory.
+Project copied to /tmp/tmpw97ldlcd/project_sources.
+ansible-playbook 2.9.2
+  config file = /root/.ansible.cfg
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /opt/polemarch/lib/python3.7/site-packages/ansible
+  executable location = /opt/polemarch/bin/ansible-playbook
+  python version = 3.7.5 (default, Oct 17 2019, 12:25:15) [GCC 8.3.0]
+Using /root/.ansible.cfg as config file
+setting up inventory plugins
+Set default localhost to localhost
+Parsed localhost, inventory source with host_list plugin
+Loading callback plugin default of type stdout, v2.0 from /opt/polemarch/lib/python3.7/site-packages/ansible/plugins/callback/default.py
+
+PLAYBOOK: esr-apply-config.yml *************************************************
+Positional arguments: esr-apply-config.yml
+verbosity: 4
+connection: smart
+timeout: 10
+become_method: sudo
+tags: ('all',)
+inventory: ('localhost,',)extra_vars: ('target_host=192.168.33.201 target_port=22 target_user=admin target_pass=password token=f123de04-7be0-4bb7-bde1-069747595cfa reply_to=http://192.168.32.222:8085/reply_to/6/apply_config/1/ config_link=http://192.168.32.222:8086/get_config/1 sftp_user=sftp_admin sftp_password=password1',)
+forks: 5
+
+1 plays in esr-apply-config.yml
+PLAY [all] *********************************************************************
+META: ran handlers
+
+TASK [create temp file] ********************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:13
+<localhost> ESTABLISH LOCAL CONNECTION FOR USER: root
+
+<localhost> EXEC /bin/sh -c 'echo ~root && sleep 0'
+<localhost> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719 `" && echo ansible-tmp-1580716224.2056556-49083425782719="` echo /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719 `" ) && sleep 0'<localhost> Attempting python interpreter discovery
+
+<localhost> EXEC /bin/sh -c 'echo PLATFORM; uname; echo FOUND; command -v '"'"'/usr/bin/python'"'"'; command -v '"'"'python3.7'"'"'; command -v '"'"'python3.6'"'"'; command -v '"'"'python3.5'"'"'; command -v '"'"'python2.7'"'"'; command -v '"'"'python2.6'"'"'; command -v '"'"'/usr/libexec/platform-python'"'"'; command -v '"'"'/usr/bin/python3'"'"'; command -v '"'"'python'"'"'; echo ENDFOUND && sleep 0'
+<localhost> EXEC /bin/sh -c '/opt/polemarch/bin/python3.7 && sleep 0'<localhost> Python interpreter discovery fallback (unsupported Linux distribution: alpine)
+
+Using module file /opt/polemarch/lib/python3.7/site-packages/ansible/modules/files/tempfile.py
+<localhost> PUT /root/.ansible/tmp/ansible-local-2586n87go5s/tmpp2op275g TO /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719/AnsiballZ_tempfile.py<localhost> EXEC /bin/sh -c 'chmod u+x /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719/ /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719/AnsiballZ_tempfile.py && sleep 0'
+
+<localhost> EXEC /bin/sh -c '/opt/polemarch/bin/python3.7 /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719/AnsiballZ_tempfile.py && sleep 0'
+<localhost> EXEC /bin/sh -c 'rm -f -r /root/.ansible/tmp/ansible-tmp-1580716224.2056556-49083425782719/ > /dev/null 2>&1 && sleep 0'
+[WARNING]: Platform linux on host localhost is using the discovered Pythoninterpreter at /opt/polemarch/bin/python3.7, but future installation of another
+
+Python interpreter could change this. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information.
+
+ok: [localhost] => {
+
+    "ansible_facts": {
+        "discovered_interpreter_python": "/opt/polemarch/bin/python3.7"    },
+    "changed": false,
+    "gid": 0,
+
+    "group": "root",
+    "invocation": {
+        "module_args": {
+            "path": null,
+            "prefix": "ansible.",
+            "state": "file",
+            "suffix": "-config"
+        }    },
+
+    "mode": "0600",
+    "owner": "root",
+    "path": "/tmp/ansible.uru709lr-config",
+    "size": 0,    "state": "file",
+    "uid": 0
+}
+
+
+TASK [get config file] *********************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:22
+<localhost> ESTABLISH LOCAL CONNECTION FOR USER: root<localhost> EXEC /bin/sh -c 'echo ~root && sleep 0'
+
+<localhost> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126 `" && echo ansible-tmp-1580716225.9170496-172260461348126="` echo /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126 `" ) && sleep 0'
+Using module file /opt/polemarch/lib/python3.7/site-packages/ansible/modules/net_tools/basics/get_url.py
+<localhost> PUT /root/.ansible/tmp/ansible-local-2586n87go5s/tmpsx08v4lx TO /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126/AnsiballZ_get_url.py<localhost> EXEC /bin/sh -c 'chmod u+x /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126/ /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126/AnsiballZ_get_url.py && sleep 0'
+<localhost> EXEC /bin/sh -c '/opt/polemarch/bin/python3.7 /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126/AnsiballZ_get_url.py && sleep 0'
+<localhost> EXEC /bin/sh -c 'rm -f -r /root/.ansible/tmp/ansible-tmp-1580716225.9170496-172260461348126/ > /dev/null 2>&1 && sleep 0'
+fatal: [localhost]: FAILED! => {
+    "changed": false,
+
+    "dest": "/tmp/ansible.uru709lr-config",
+    "elapsed": 0,    "gid": 0,
+    "group": "root",
+    "invocation": {
+        "module_args": {
+            "attributes": null,
+
+            "backup": null,            "checksum": "",
+
+            "client_cert": null,            "client_key": null,
+
+            "content": null,
+            "delimiter": null,
+            "dest": "/tmp/ansible.uru709lr-config",
+            "directory_mode": null,
+            "follow": false,            "force": false,
+
+            "force_basic_auth": false,
+            "group": null,            "headers": null,
+
+            "http_agent": "ansible-httpget",            "mode": null,
+
+            "owner": null,
+            "regexp": null,            "remote_src": null,
+
+            "selevel": null,
+            "serole": null,
+            "setype": null,
+            "seuser": null,            "sha256sum": "",
+
+            "src": null,
+            "timeout": 10,            "tmp_dest": null,
+
+            "unsafe_writes": null,
+            "url": "http://192.168.32.222:8086/get_config/1",
+            "url_password": null,            "url_username": null,
+
+            "use_proxy": true,
+            "validate_certs": true        }
+
+    },
+    "mode": "0600",    "msg": "Request failed: <urlopen error [Errno 113] Host is unreachable>",
+    "owner": "root",
+    "size": 0,
+
+    "state": "file",
+    "uid": 0,    "url": "http://192.168.32.222:8086/get_config/1"
+}
+
+
+TASK [set error] ***************************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:30
+ok: [localhost] => {    "ansible_facts": {
+        "error": "cannot get file: http://192.168.32.222:8086/get_config/1\nerror: Request failed: <urlopen error [Errno 113] Host is unreachable>"
+    },
+
+    "changed": false}
+
+
+TASK [fail] ********************************************************************task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:33
+fatal: [localhost]: FAILED! => {
+
+    "changed": false,
+    "msg": "Failed as requested from task"
+}
+
+TASK [set error fact] **********************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:68
+skipping: [localhost] => {
+    "changed": false,
+    "skip_reason": "Conditional result was False"
+}
+TASK [include post error tasks] ************************************************
+
+task path: /tmp/tmpw97ldlcd/project_sources/esr-apply-config.yml:73included: /tmp/tmpw97ldlcd/project_sources/post-error-tasks.yml for localhost
+
+
+TASK [post error] **************************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/post-error-tasks.yml:4
+<localhost> ESTABLISH LOCAL CONNECTION FOR USER: root<localhost> EXEC /bin/sh -c 'echo ~root && sleep 0'
+<localhost> EXEC /bin/sh -c '( umask 77 && mkdir -p "` echo /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863 `" && echo ansible-tmp-1580716226.947583-46823598589863="` echo /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863 `" ) && sleep 0'
+
+Using module file /opt/polemarch/lib/python3.7/site-packages/ansible/modules/net_tools/basics/uri.py
+<localhost> PUT /root/.ansible/tmp/ansible-local-2586n87go5s/tmpov0x18yk TO /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863/AnsiballZ_uri.py<localhost> EXEC /bin/sh -c 'chmod u+x /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863/ /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863/AnsiballZ_uri.py && sleep 0'
+
+<localhost> EXEC /bin/sh -c '/opt/polemarch/bin/python3.7 /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863/AnsiballZ_uri.py && sleep 0'
+<localhost> EXEC /bin/sh -c 'rm -f -r /root/.ansible/tmp/ansible-tmp-1580716226.947583-46823598589863/ > /dev/null 2>&1 && sleep 0'
+fatal: [localhost]: FAILED! => {
+    "changed": false,
+    "content": "",
+    "elapsed": 0,
+    "invocation": {        "module_args": {
+
+            "attributes": null,
+            "backup": null,            "body": "{\"status\": \"ERROR\", \"token\": \"f123de04-7be0-4bb7-bde1-069747595cfa\", \"message\": \"cannot get file: http://192.168.32.222:8086/get_config/1\\nerror: Request failed: <urlopen error [Errno 113] Host is unreachable>\"}",
+            "body_format": "raw",
+
+            "client_cert": null,
+            "client_key": null,
+            "content": null,
+            "creates": null,
+            "delimiter": null,
+            "dest": null,            "directory_mode": null,
+            "follow": false,
+
+            "follow_redirects": "safe",
+            "force": false,            "force_basic_auth": false,
+
+            "group": null,
+            "headers": {                "Content-Type": "application/json"
+            },
+
+            "http_agent": "ansible-httpget",
+            "method": "POST",            "mode": null,
+
+            "owner": null,            "regexp": null,
+            "remote_src": null,
+            "removes": null,
+            "return_content": false,
+            "selevel": null,
+
+            "serole": null,            "setype": null,
+            "seuser": null,
+
+            "src": null,
+            "status_code": [
+                200
+            ],
+            "timeout": 30,
+            "unix_socket": null,
+            "unsafe_writes": null,
+            "url": "http://192.168.32.222:8085/reply_to/6/apply_config/1/",
+            "url_password": null,
+            "url_username": null,
+            "use_proxy": true,
+            "validate_certs": true        }
+
+    },
+    "msg": "Status code was -1 and not [200]: Request failed: <urlopen error [Errno 113] Host is unreachable>",
+    "redirected": false,
+    "status": -1,
+    "url": "http://192.168.32.222:8085/reply_to/6/apply_config/1/"
+}
+
+TASK [log error] ***************************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/post-error-tasks.yml:19
+ok: [localhost] => {
+    "error": "cannot get file: http://192.168.32.222:8086/get_config/1\nerror: Request failed: <urlopen error [Errno 113] Host is unreachable>"
+}
+
+TASK [fail] ********************************************************************
+task path: /tmp/tmpw97ldlcd/project_sources/post-error-tasks.yml:23
+fatal: [localhost]: FAILED! => {
+    "changed": false,
+    "msg": "Cannot post error!"
+}
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=4    changed=0    unreachable=0    failed=1    skipped=1    rescued=3    ignored=0
+
+Tmpdir "/tmp/tmpw97ldlcd" was cleared.

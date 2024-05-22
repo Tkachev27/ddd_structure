@@ -1,0 +1,8 @@
+<p>
+  <button
+      *ngFor="let filter of DeviceTypes"
+      (click)="filterEmit(filter)"
+      [style.color]="selectedFilter === filter ? 'red' : 'black'"> 
+    {{filter}} 
+  </button>
+</p>
