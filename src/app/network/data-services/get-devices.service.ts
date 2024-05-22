@@ -9,6 +9,7 @@ export class GetDevicesService {
   constructor(private getDevicesApiService: GetDevicesApiService) {}
 
   getDevices$(request: DeviceRequest): Observable<{ devices: Device[], total: number }> {
+    console.log('get device');
     return this.getDevicesApiService.getDevices(request);
   }
 }

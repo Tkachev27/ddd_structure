@@ -16,6 +16,11 @@ import { PaginateDevicesComponent } from './use-cases/paginate-devices/paginate-
 import { DevicePageNumberChangedEventService } from './event-services/device-page-number-changed-event.service';
 import { DeviceCountChangedEventService } from './event-services/device-count-changed-event.service';
 import { DeviceTotalChangedEventService } from './event-services/device-total-changed-event.service';
+import { DeviceUrlParamsloadedEventService } from './event-services/device-url-params-loaded-event.service';
+import { DeviceCountInitialChangeEventService } from './event-services/device-count-initial-change-event.service';
+import { DevicePageNumberInitialChangeEventService } from './event-services/device-page-number-initial-change-event.service';
+import { DeviceTypeFilterInitialChangeEventService } from './event-services/device-type-filter-initial-change-event.service';
+import { ShowDevicesInitializedEventService } from './event-services/show-devices-initialized-event.service';
 
 @NgModule({
   declarations: [
@@ -31,14 +36,19 @@ import { DeviceTotalChangedEventService } from './event-services/device-total-ch
     NetworkRoutingModule
   ],
   providers: [
+    NetworkNavigationService,
     SelectedDevicesService,
     GetDevicesApiService,
     GetDevicesService,
     DeviceTypeFilterChangedEventService,
-    NetworkNavigationService,
     DevicePageNumberChangedEventService,
     DeviceCountChangedEventService,
     DeviceTotalChangedEventService,
+    DeviceUrlParamsloadedEventService,
+    DeviceCountInitialChangeEventService,
+    DevicePageNumberInitialChangeEventService,
+    DeviceTypeFilterInitialChangeEventService,
+    ShowDevicesInitializedEventService,
   ],
 })
 export class NetworkModule { }

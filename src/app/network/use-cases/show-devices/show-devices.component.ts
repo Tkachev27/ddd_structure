@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, ReplaySubject, Subscription, combineLatest, map, switchMap, tap } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatest, map, merge, switchMap, tap } from 'rxjs';
 
 import { GetDevicesService } from '../../data-services/get-devices.service';
 import { Device, DeviceRequest } from 'src/backend';
@@ -7,6 +7,10 @@ import { DeviceTypeFilterChangedEventService } from '../../event-services/device
 import { DevicePageNumberChangedEventService } from '../../event-services/device-page-number-changed-event.service';
 import { DeviceCountChangedEventService } from '../../event-services/device-count-changed-event.service';
 import { DeviceTotalChangedEventService } from '../../event-services/device-total-changed-event.service';
+import { DeviceCountInitialChangeEventService } from '../../event-services/device-count-initial-change-event.service';
+import { DevicePageNumberInitialChangeEventService } from '../../event-services/device-page-number-initial-change-event.service';
+import { DeviceTypeFilterInitialChangeEventService } from '../../event-services/device-type-filter-initial-change-event.service';
+import { ShowDevicesInitializedEventService } from '../../event-services/show-devices-initialized-event.service';
 
 @Component({
   selector: 'app-show-devices',
@@ -30,17 +34,32 @@ export class ShowDevicesComponent implements OnInit, OnDestroy {
     private devicePageNumberChangedEventService: DevicePageNumberChangedEventService,
     private deviceCountChangedEventService: DeviceCountChangedEventService,
     private deviceTotalChangedEventService: DeviceTotalChangedEventService,
+    private deviceCountInitialChangeEventService: DeviceCountInitialChangeEventService,
+    private devicePageNumberInitialChangeEventService: DevicePageNumberInitialChangeEventService,
+    private deviceTypeFilterInitialChangeEventService: DeviceTypeFilterInitialChangeEventService,
+    private showDevicesInitializedEventService: ShowDevicesInitializedEventService,
   ) {}
 
   ngOnInit(): void {
-    this.subscriptions.add(
-      combineLatest([
-        this.deviceCountChangedEventService.deviceCountChangedEvent$,
-        this.devicePageNumberChangedEventService.devicePageNumberChangedEvent$,
-        this.deviceTypeFilterChangedEventService.deviceTypeFilterChangedEvent$,
-      ]).subscribe(([count, pageNumber, filter]) => this.showDevices.next({ count, pageNumber, filter })
-      )
+    this.showDevicesInitializedEventService.emit();
+    const count$ = merge(
+      this.deviceCountChangedEventService.deviceCountChangedEvent$,
+      this.deviceCountInitialChangeEventService.deviceCountInitialChangeEvent$
     );
+
+    const pageNumber$ = merge(
+      this.devicePageNumberChangedEventService.devicePageNumberChangedEvent$,
+      this.devicePageNumberInitialChangeEventService.devicePageNumberInitialChangeEvent$
+    );
+
+    const filter$ = merge(
+      this.deviceTypeFilterChangedEventService.deviceTypeFilterChangedEvent$,
+      this.deviceTypeFilterInitialChangeEventService.deviceTypeFilterInitialChangeEvent$
+    );
+
+    this.subscriptions.add(combineLatest([count$, pageNumber$, filter$]).subscribe(
+      ([count, pageNumber, filter]) => this.showDevices.next({ count, pageNumber, filter })
+    ));
   }
 
   ngOnDestroy(): void {
