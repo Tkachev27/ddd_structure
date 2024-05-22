@@ -1,0 +1,1267 @@
+/* You can add global styles to this file, and also import other style files */
+@use "sass:math";
+
+@import 'custom-theme';
+@import 'cytoscape-panzoom/cytoscape.js-panzoom.css';
+@import './variables';
+@import '@xterm/xterm/css/xterm.css';
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(assets/fonts/Roboto/Roboto-Light.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/Roboto/Roboto-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(assets/fonts/Roboto/Roboto-Medium.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(assets/fonts/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+  local('MaterialIcons-Regular'),
+  url(assets/fonts/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+  url(assets/fonts/iconfont/MaterialIcons-Regular.woff) format('woff'),
+  url(assets/fonts/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+html, body { height: 100%; }
+/* Font color for the non-Angular Material items */
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; color: $main-text-color;}
+
+.line-decoration-changed, .line-decoration-added {
+  background: lightblue;
+  width: 5px !important;
+  margin-left: 3px;
+}
+
+.line-decoration-removed {
+  margin-left: 3px;
+
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+
+  border-left: 5px solid green;
+}
+
+.main-tab-group {
+  height: 100%;
+
+  & .mat-tab-body-wrapper {
+    height: 100%;
+  }
+}
+
+@mixin link() {
+  color: $primary;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline;
+
+  &:hover {
+    color: darken($primary, 30%);
+  }
+}
+
+table {
+  width: 100%;
+
+  & .table-link {
+    @include link();
+  }
+}
+
+.link {
+  @include link();
+
+  &.disabled {
+    cursor: auto;
+    color: $option-disabled-color;
+  }
+}
+
+td.mat-cell,
+th.mat-header-cell {
+  padding-left: 5px !important;
+  padding-right: 5px!important;
+}
+
+td.mat-cell:first-of-type,
+th.mat-header-cell:first-of-type {
+  padding-left: 24px !important;
+}
+
+@mixin spinner-container-common($bottom-value: 0) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: $bottom-value;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/**
+ * <pre>{@code
+ * <div class="table-container">
+ *   <div *ngIf="dataSource?.loading | async" class="spinner-container">
+ *     <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+ *   </div>
+ *    <table mat-table [dataSource]="dataSource" matSort>
+ *      ...
+ *    </table>
+ *    <mat-paginator [length]="initialPageLength"
+                 [pageSize]="initialPageSize"
+                 [pageIndex]="initialPageIndex"
+                 [pageSizeOptions]="[5, 10, 25, 100]"
+                 showFirstLastButtons>
+ *    </mat-paginator>
+ * </div>
+ * }</pre>
+ *
+ * .table-container имеет минимальную высоту 200px,
+ * которая работает при отсутствии данных таблицы (при первичной загрузке таблицы)
+ * таблица имеет высоту, равную 0, также
+ * при малом количестве строк в таблице (менее или равно 4).
+ *
+ * .spinner-container не должен закрывать и блокировать paginator,
+ * поэтому снизу оставляем просвет в 56px - стандартную высоту пагинатора.
+ *
+ * {@link <a href="https://stackblitz.com/angular/nlerpnageql">Table retrieving data through HTTP</a>}
+ */
+
+.table-container {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+
+  & .spinner-container {
+    @include spinner-container-common(56px);
+    background: $spinner-bgc;
+    height: 100%;
+  }
+
+  & .paginator-fixed {
+    position: sticky;
+    bottom: 0;
+    z-index: 1000;
+  }
+}
+
+/**
+ * <pre>{@code
+ * <div class="field-container">
+ *   <div *ngIf="dataSource?.loading | async" class="spinner-container">
+ *     <mat-spinner></mat-spinner>
+ *   </div>
+ *    <mat-form-field *ngIf="!(dataSource?.loading | async)>
+ *      ...
+ *    </mat-form-field>
+ *    <mat-error *ngIf="!(dataSource?.loading | async)>
+ *      ...
+ *    </mat-error>
+ * </div>
+ * }</pre>
+ *
+ * .field-container имеет минимальную высоту 100px,
+ * которая работает при первичной загрузке контрола.
+ * .spinner-container появляется внутри контрола как только пользователь открыл диалоговое окно.
+ */
+
+.field-container {
+  position: relative;
+  min-height: 100px;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+    background: $spinner-bgc;
+  }
+}
+
+/**
+ * <pre>{@code
+ * <div class="btn-container">
+ *   <div class="spinner-container" *ngIf="uploading">
+ *     <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+ *   </div>
+ *   <button mat-flat-button color="primary" (click)="uploadFirmware()" [disabled]="uploadFirmwareForm.invalid || uploading">
+ *     {{'Upload' | translate}}
+ *   </button>
+ * </div>
+ * }</pre>
+ *
+ * .spinner-container появляется внутри кнопки как только пользователь нажал на кнопку
+ * блокируя всю область кнопки.
+ *
+ * {@link <a href="https://stackblitz.com/edit/angular-k5a64z-bfbkuw">Button with spinner in it</a>}
+ */
+ .btn-container {
+  position: relative;
+  display: inline-block;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+  }
+}
+
+.btn-container__block {
+  position: relative;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+  }
+}
+
+/**
+* <pre>{@code
+* <div class="spinner-in-dialog-wrapper">
+*   <div class="spinner-in-dialog-container" *ngIf="uploading">
+*     <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+*   </div>
+*   <h1 mat-dialog-title>{{'Upload firmware' | translate}}</h1>
+*   <div mat-dialog-content>
+*     ...
+*   </div
+* </div>
+* }</pre>
+*
+.spinner-in-dialog-container учитывает отступы ( padding ) диалогового окна Material и покрывает всю область диалогового окна
+*/
+
+.spinner-in-dialog-wrapper {
+  position: relative;
+
+  & .spinner-in-dialog-container {
+    @include spinner-container-common(0);
+    background: $spinner-bgc;
+    top: -24px;
+    left: -24px;
+    right: -24px;
+    z-index: 1001;
+  }
+}
+
+.full-page-spinner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+    background: $spinner-bgc;
+  }
+}
+
+.config-container,
+.template-container,
+.network-map-container,
+.settings-content,
+.fabric-devices-tab,
+.fabric-devices-table-container,
+.devices-upgrade-table-container,
+.monitoring-form-container ,
+.spinner-wrapper {
+  position: relative;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+    background: $spinner-bgc;
+  }
+}
+
+.device-container,
+.license-spinner-container {
+  position: relative;
+  min-height: 100px;
+
+  & .spinner-container {
+    @include spinner-container-common(0);
+    background: $spinner-bgc;
+  }
+}
+
+.widget {
+  & .mat-card-header {
+    margin: 0 0 10px;
+    min-height: 52px; // avoids changing height of the header while subtitle
+                      // with error appears.
+
+    & .mat-card-header-text {
+      flex: 1;
+
+      & .mat-card-title {
+        margin-top: 12px;
+      }
+
+      & mat-card-subtitle:not(:first-child) { // use for error when data is expired.
+        margin-bottom: 0;
+        color: $warn;
+        margin-top: -12px;
+      }
+
+      & button {
+        height: 48px; // reload button is on the same line with title.
+      }
+    }
+  }
+
+  & .widget-content {
+    position: relative;
+    min-height: 112px;
+    margin: 0 15px;
+
+    & .chart-area {
+      position: relative;
+      background: $chart-area-bgc;
+    }
+
+    & .spinner-container {
+      @include spinner-container-common(0);
+      background: $spinner-bgc;
+    }
+  }
+
+  & .not-available {
+    color: $warn;
+    padding: 16px;
+
+    & .material-icons {
+      display:inline-flex;
+      vertical-align:middle;
+    }
+  }
+}
+
+.breadcrumbs {
+  color: #303030;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.breadcrumbs.last {
+  color: $primary;
+  cursor: text;
+}
+
+.empty-breadcrumbs {
+  background-color: $breadcrumbs-bgc;
+  min-width: 100px;
+  width: 100%;
+  height: 24px;
+}
+
+.user-row.active,
+.role-row.active {
+  background-color: $blue-hover-table-row-bgc;
+}
+
+.user-row:hover,
+.role-row:hover {
+  cursor: pointer;
+  background-color: $blue-hover-table-row-bgc;
+}
+
+.scope-row:hover {
+  cursor: pointer;
+  background-color: $blue-hover-table-row-bgc;
+}
+
+.hidden {
+  display: none;
+}
+
+.mat-dialog-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.button-wrap {
+  display: inline-block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.map-tooltip {
+  font-size: 12px;
+  font-weight: 500;
+  background-color: #fff;
+  border: solid 1px #aaa;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.map-container {
+  height: calc(100% - 134px);
+  position: relative;
+}
+
+.map-message-container {
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 0.8rem;
+  z-index: 10;
+
+  & .map-message {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, .8);
+    border: 1px solid #aaa;
+    border-radius: 1px;
+    margin: 5px 0;
+  }
+}
+
+.map-latest-update-error {
+  color: $dark-warn;
+}
+
+.map-interfaces-warning,
+.map-inventory-update-warning {
+  color: darkorange;
+}
+
+// удален с Настройки-Доступ-SNMP,
+// остался на Устройство-Доступ-SNMP,
+.snmp-warning {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.info-text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.no-elements-text {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.cy-panzoom {
+  bottom: 240px;
+  right: 80px;
+}
+
+.preview-map-container .cy-panzoom {
+  position: relative !important;
+  top: 65%;
+  left: 95%;
+  @media (max-width: 1440px) {
+    left: 93%;
+  }
+}
+
+.cy-panzoom-slider-handle {
+  display: flex;
+  justify-content: center;
+
+  .icon {
+    margin: 0;
+  }
+}
+
+.cy-panzoom-slider-handle::after {
+  content: "—";
+}
+
+.cy-panzoom-zoom-out::after {
+  content: "—";
+}
+
+.cy-panzoom-zoom-in::after {
+  font-family: 'Material Icons';
+  content: "add";
+}
+
+.cy-panzoom-reset::after {
+  font-family: 'Material Icons';
+  content: "center_focus_strong";
+}
+
+.cy-panzoom-no-zoom-tick {
+  display: none;
+}
+
+.mat-select-panel .tree {
+  height: 100% !important;
+  overflow: scroll;
+  display: contents;
+}
+
+.select-options-list {
+  margin-top: 18px;
+  max-height: 380px !important;
+}
+
+.select-options-list > .mat-option {
+  height: 36px !important;
+}
+
+.mat-progress-bar {
+  height: 5px !important;
+}
+
+.progress-bar-container {
+  margin-bottom: 10px;
+}
+
+.progress-bar-row {
+  display: flex;
+  align-items: center;
+
+  & .mat-progress-spinner {
+    margin-right: 10px;
+  }
+}
+
+@mixin ellipsis-text($width: 100px) {
+  width: $width;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepper-left-right-container {
+  display: flex;
+  height: 100%;
+
+  & .stepper-left-side {
+    width: 450px;
+    overflow: auto;
+
+    & table {
+      width: 100%;
+    }
+
+  }
+
+  & .stepper-right-side {
+    margin-left: 20px;
+    flex: 1;
+    height: 100%;
+    min-width: 350px;
+
+    & .template-preview {
+      margin-top: 31px;
+      height: calc(100% - 35px);
+      border: 1px #f5f5f5 solid;
+    }
+
+    & .my-code-editor {
+      height: 100%;
+    }
+  }
+}
+
+.template-name {
+  @include ellipsis-text(350px);
+}
+
+.help {
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  & .mat-icon {
+    padding: 0 16px;
+  }
+}
+
+.docs {
+  & var {
+    color: #7f0000;
+  }
+
+  & li {
+    padding: 3px 0;
+  }
+
+  & .code {
+    display: inline-block;
+    background-color: lightgrey;
+    padding: 3px 5px;
+  }
+}
+
+.main-checkbox {
+  position: relative;
+  display: flex;
+}
+
+.selected-elements-count {
+  position: absolute;
+  bottom: -18px;
+}
+
+.dialog {
+  $dialog-actions: 52px;
+  $dialog-title: 42px;
+  $dialog-paddings: 53px;
+  & .mat-dialog-container {
+    overflow: inherit;
+    box-sizing: content-box;
+  }
+
+  & .mat-dialog-title {
+    height: $dialog-title;
+    padding: 10px;
+    margin: 0px;
+  }
+
+  & .mat-dialog-content {
+    height: calc(100% - #{$dialog-actions} - #{$dialog-title} - #{$dialog-paddings});
+    overflow: unset;
+  }
+
+  & .mat-dialog-actions {
+    align-content: center;
+    height: $dialog-actions;
+    min-height: 0;
+  }
+}
+
+.dialog-with-stepper {
+  $upgrade-checkbox: 56px;
+
+  & .mat-dialog-container {
+    padding: 0;
+  }
+
+  & .custom-step-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(95vh - #{$stepper-header});
+  }
+
+  & .fabric-stepper .step-content {
+    .mat-expansion-panel-content {
+        max-height: $stepper-filters;
+        overflow: auto;
+    }
+  }
+
+  & .step-content {
+    height: calc(95vh - #{$stepper-header} - #{$stepper-actions});
+
+    & .step-scrollable-content {
+      overflow: auto;
+      height: 100%;
+    }
+
+    & .step-table-content {
+      overflow: auto;
+      height: calc(100% - #{$upgrade-checkbox});
+    }
+  }
+
+  & .step-actions {
+    display: flex;
+    justify-content: center;
+    margin: math.div($stepper-actions - 36px, 2) 0;
+  }
+}
+
+.vertical-flex-dialog {
+  display: flex;
+  flex-flow: column nowrap;
+
+  & .mat-dialog-container {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+}
+
+.flex-stepper-dialog {
+  & .mat-dialog-container {
+    padding: 0;
+  }
+
+  & .mat-horizontal-content-container {
+    flex-grow: 1;
+    overflow: auto;
+  }
+
+  & .mat-horizontal-stepper-content {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 100%;
+  }
+
+  & .custom-step-wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    flex-grow: 1;
+  }
+
+  & .step-content {
+    overflow: auto;
+    flex-grow: 1;
+
+    & .step-table-content {
+      overflow: auto;
+    }
+  }
+
+  & .step-actions {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1280px) {
+  $dialog-actions: 52px;
+  $dialog-title: 32px;
+  $dialog-paddings: 42px;
+  .dialog {
+    & .mat-dialog-title {
+      padding: 0px 0px 10px 0px;
+      font-size: 1.2em;
+      height: $dialog-title;
+    }
+
+    & .mat-dialog-content {
+      height: calc(100% - #{$dialog-actions} - #{$dialog-title} - #{$dialog-paddings});
+    }
+
+    & .mat-dialog-container {
+      padding: 16px;
+    }
+
+    & .mat-form-field {
+      width: 125px;
+    }
+
+    & .mat-dialog-actions {
+      height: $dialog-actions;
+    }
+  }
+
+  .dialog-with-stepper {
+    & .custom-step-wrapper {
+      & .step-table-content {
+        td.mat-cell:first-of-type,
+        th.mat-header-cell:first-of-type {
+          padding-left: 0 !important;
+        }
+
+        & .mat-form-field {
+          width: 100px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 780px) {
+  .dialog {
+    & .mat-tab-label {
+      height: 30px;
+    }
+
+    & .mat-form-field {
+      width: 60px;
+    }
+
+    & .mat-expansion-panel-body {
+      padding: 0 0px 16px;
+    }
+
+    & .mat-toolbar-single-row {
+      height: 36px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog {
+    & .mat-dialog-title {
+      line-height: 2em;
+    }
+
+    & .mat-tab-label {
+      height: 20px;
+    }
+
+    & .mat-dialog-container {
+      padding: 0px;
+    }
+
+    & .mat-form-field {
+      width: 50px;
+    }
+
+    & .mat-expansion-panel-body {
+      overflow: auto;
+    }
+  }
+}
+
+.disabled-row .statuses div {
+  background: $disabled-row-status-bgc-color;
+  color: $disabled-row-status-text-color;
+}
+
+.filter-panel {
+  margin: 5px 0;
+
+  & .mat-expansion-panel {
+    box-shadow: none;
+    background: none;
+  }
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.overflow-content {
+  overflow: auto;
+}
+
+.overflow-visible {
+  overflow: visible;
+}
+
+.vertical-flex-container {
+  display: flex !important;
+  flex-direction: column;
+  max-height: 100%;
+  min-height: 0;
+}
+
+.mat-toolbar {
+  min-height: 64px;
+}
+
+.vertical-divider {
+  width: 2px;
+  height: 35px;
+  background-color: #b6b6b6;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+  opacity: 1;
+}
+
+.mat-sort-header-container {
+  min-width: 35px;
+}
+
+.icon-table-cell {
+  max-width: 128px;
+  text-align: center;
+
+  & .mat-sort-header-container {
+    justify-content: center;
+
+    & .mat-sort-header-content {
+      padding-left: 12px;
+    }
+  }
+}
+
+div.ngx-timepicker {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42) !important;
+}
+
+.ngx-timepicker-control__arrow {
+  height: 13px;
+}
+
+.ngx-timepicker-control__input {
+  font-size: inherit !important;
+  background-color: transparent;
+  font-family: inherit;
+}
+
+.date-field {
+  width: 130px;
+  margin-right: 15px;
+  padding-bottom: 0;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.wordbreak {
+  overflow-wrap: anywhere;
+}
+
+.cards-wrapper {
+  display: flex;
+  gap: $gap-between-cards;
+  padding: $padding-top-above-cards 0;
+}
+
+@media (max-width: 870px) {
+  .cards-wrapper {
+    flex-wrap: wrap;
+
+    & .settings-card {
+      width: 100%;
+    }
+
+    & .mat-card {
+      min-width: 250px;
+    }
+  }
+}
+
+.mat-card:not(.widget) .mat-card-header-text {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.mat-form-field.compact {
+  $compactPadding: .25em;
+
+  & .mat-form-field-wrapper {
+    padding-bottom: $compactPadding !important;
+  }
+
+  & .mat-form-field-underline {
+    bottom: $compactPadding;
+  }
+}
+
+.mat-form-field.no-label {
+  & .mat-form-field-infix {
+    border-top: 0;
+  }
+}
+
+button.mat-mdc-icon-button[disabled] {
+  color: #00000042;
+}
+
+.display-none {
+  display: none;
+}
+
+.line-clamp {
+  width: auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+}
+
+.firmware-warning {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.flex-col {
+  display: flex !important;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flex-row {
+  display: flex !important;
+  flex-direction: row;
+}
+
+.items-baseline {
+  align-items: baseline;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.splitter {
+  background-color: $dark-primary-text;
+  height: 1px;
+  width: 100%;
+}
+
+.tooltip-with-break {
+  word-break: break-all !important;
+  white-space: normal !important;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.relative {
+  position: relative;
+}
+
+// Percents
+@for $i from 1 through 100 {
+  .basis-\[#{$i}\%\] {
+    flex-basis: #{$i + '%'};
+  }
+
+  .w-\[#{$i}\%\]{
+    width: #{$i + '%'};
+  }
+}
+
+// Pixels
+@for $i from -100 through 300 {
+  .gap-\[#{$i}px\] {
+    gap: #{$i}px;
+  }
+
+  .gap-x-\[#{$i}px\] {
+    column-gap: #{$i}px;
+  }
+
+  .w-\[#{$i}px\] {
+    width: #{$i}px;
+  }
+
+  .mt-\[#{$i}px\] {
+    margin-top: #{$i}px;
+  }
+
+  .mb-\[#{$i}px\] {
+    margin-bottom: #{$i}px;
+  }
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+
+  .start {
+    display: flex;
+  }
+  .end {
+    display: flex;
+  }
+}
+
+.network-message-container {
+  padding: 0 5px;
+  font-size: 0.8rem;
+  z-index: 10;
+  position: relative;
+  top: -5px;
+
+  & .network-latest-update-error {
+    color: $dark-warn;
+  }
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid $border-color;
+  box-shadow: 0 4px 4px 0 $box-shadow-color;
+
+  &-icon {
+    position: relative;
+
+    &-main {
+      font-size: 42px;
+      width: 42px !important;
+      height: 42px !important;
+    }
+
+    &-badge {
+      position: absolute;
+      bottom: 0;
+      left: 18px;
+      border-radius: 50%;
+      background: $white-bc;
+      padding: 2px;
+      width: 20px;
+      height: 20px;
+
+      .mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &-title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    &-description {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 14px;
+
+      .link {
+        color: $primary;
+
+        &:hover {
+          color: $link-hover-color;
+        }
+      }
+    }
+  }
+}
+
+@mixin notification-type($color) {
+  color: $color;
+}
+
+@each $type, $color in $notification-colors {
+  .#{$type} {
+    @include notification-type($color);
+  }
+}
+
+@mixin dashed-link {
+  text-decoration: none;
+  border-bottom: 1px dashed;
+  padding-bottom: .1rem;
+}
+
+.navigation-breadcrumbs {
+  & .header-link {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+      color: lightblue;
+    }
+  }
+
+  .breadcrumb {
+    &-block {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    &-name {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+      height: 100%;
+      padding: .125rem .375rem;
+      border-radius: .25rem;
+
+      &.breadcrumb-with-link:not(.device-breadcrumb):hover {
+        background-color: rgba(255, 255, 255, .1);
+
+        & a {
+          color: inherit;
+        }
+      }
+    }
+    &-hint {
+      color: white;
+      font-size: 9px;
+      line-height: 12px;
+    }
+  }
+
+  .device-breadcrumb {
+    background-color: white;
+    color: $primary;
+    &.breadcrumb-with-link:hover {
+      background-color: rgba(255, 255, 255, .9);
+    }
+
+    & .breadcrumb-hint {
+      color: $primary;
+    }
+    & .header-link {
+      color: $primary;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+import { Meta, Story, Canvas, ArgsTable, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+
+<Meta title="Components/TimePickerMenu/Overview" />
+
+## Usage
+Ипортировать модуль
+<Source
+  language='typescript'
+  dark
+  format={true}
+  code={dedent`
+    import { ComponentsModule } from 'src/app/shared/components/components.module';
+  `}
+/>
+
+Использовать компонент
+<Canvas>
+  <Story id="components-timepickermenu--time-picker"/>
+</Canvas>

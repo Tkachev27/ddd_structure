@@ -1,0 +1,6 @@
+<ng-container *ngIf="devices$ | async as devices">
+  <p *ngFor="let device of devices">
+    <app-select-device [device]="device"></app-select-device>
+    {{ device.ip }}: {{ device.model }}</p
+  >
+</ng-container>

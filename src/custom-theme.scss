@@ -1,0 +1,47 @@
+@use "sass:map";
+@use '@angular/material' as mat;
+
+@import 'variables';
+
+@include mat.legacy-core();
+
+$sg-app-theme: mat.define-light-theme((
+  color: (
+    primary: $sg-app-primary,
+    accent: $sg-app-accent,
+    warn: $sg-app-warn
+  ),
+  typography: mat.define-legacy-typography-config(),
+  density: 0
+));
+
+// A foreground palette: colors for text and icons.
+@function my-mat-light-theme-foreground($color) {
+  @return (
+    base:              black,
+    divider:           $dark-dividers,
+    dividers:          $dark-dividers,
+    disabled:          $dark-disabled-text,
+    disabled-button:   rgba(black, 0.26),
+    disabled-text:     $dark-disabled-text,
+    elevation:         black,
+    hint-text:         $dark-disabled-text,
+    secondary-text:    $dark-secondary-text,
+    icon:              rgba($color, 0.54),
+    icons:             rgba($color, 0.54),
+    text:              rgba($color, 0.87),
+    slider-min:        rgba(black, 0.87),
+    slider-off:        rgba(black, 0.26),
+    slider-off-active: rgba(black, 0.38)
+  );
+};
+
+$custom-foreground: my-mat-light-theme-foreground($main-text-color);
+
+$color: map.get($sg-app-theme, color);
+$foreground: map.merge(map.get($color, foreground), $custom-foreground);
+
+$color: map.merge($color, (foreground: $foreground));
+$sg-app-theme: map.merge($sg-app-theme, (color: $color));
+
+@include mat.all-legacy-component-themes($sg-app-theme);

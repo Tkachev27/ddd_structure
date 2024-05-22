@@ -1,0 +1,38 @@
+import { Meta, Source } from '@storybook/addon-docs';
+import dedent from 'ts-dedent';
+
+<Meta title="Directives/ValidatedSubmit" />
+
+## Description
+Директива для валидации формы перед её отправкой. 
+
+Перехватывает событие `keydown.enter` в форме, проверяет условие disabled, если оно есть, проверяет объект FormGroup на валидность. 
+При успехе запускает переданный в директиву метод, в ином случае не производит никаких действий.
+
+## Usage
+Используется у тега формы вместо стандартного `submit` и/или `keyup.enter`. Можно добавить условие `disabled` для блокировки отправки формы.
+
+<Source
+  language='html'
+  dark
+  format={true}
+  code={`
+    <form
+        [formGroup]="formGroup"
+        [disabled]="loading$ | async"
+        (appValidatedSubmit)="sendDataToServer()"></form>
+  `}
+/>
+
+Где `sendDataToServer()` — метод, который должен вызываться при подтверждении формы:
+
+<Source
+  language='js'
+  dark
+  format={true}
+  code={`
+    sendDataToServer() {
+      this.service.sendData(this.formGroup);
+    }
+  `}
+/>
