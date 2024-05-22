@@ -8,7 +8,7 @@ import { Device, DeviceRequest } from '../../../backend';
 export class GetDevicesService {
   constructor(private getDevicesApiService: GetDevicesApiService) {}
 
-  getDevices$(request: DeviceRequest): Observable<Device[]> {
+  getDevices$(request: DeviceRequest): Observable<{ devices: Device[], total: number }> {
     return this.getDevicesApiService.getDevices(request);
   }
 }

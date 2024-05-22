@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Subscription, switchMap } from 'rxjs';
+import { Observable, ReplaySubject, Subscription, combineLatest, map, switchMap, tap } from 'rxjs';
 
 import { GetDevicesService } from '../../data-services/get-devices.service';
 import { Device, DeviceRequest } from 'src/backend';
 import { DeviceTypeFilterChangedEventService } from '../../event-services/device-type-filter-changed-event.service';
+import { DevicePageNumberChangedEventService } from '../../event-services/device-page-number-changed-event.service';
+import { DeviceCountChangedEventService } from '../../event-services/device-count-changed-event.service';
+import { DeviceTotalChangedEventService } from '../../event-services/device-total-changed-event.service';
 
 @Component({
   selector: 'app-show-devices',
@@ -11,23 +14,31 @@ import { DeviceTypeFilterChangedEventService } from '../../event-services/device
   styleUrls: ['./show-devices.component.css'],
 })
 export class ShowDevicesComponent implements OnInit, OnDestroy {
-  private lastRequest: DeviceRequest = { filter: null, count: 10 };
-  private showDevices = new BehaviorSubject<DeviceRequest>(this.lastRequest);
+
+  private showDevices = new ReplaySubject<DeviceRequest>(1);
   private subscriptions = new Subscription();
 
   devices$: Observable<Device[]> = this.showDevices.asObservable().pipe(
-    switchMap(state => this.getDevicesService.getDevices$(state))
+    switchMap(state => this.getDevicesService.getDevices$(state)),
+    tap(({ total }) => this.deviceTotalChangedEventService.emit(total)),
+    map(({ devices }) => devices)
   );
 
   constructor(
     private getDevicesService: GetDevicesService,
-    private deviceTypeFilterChangedEventService: DeviceTypeFilterChangedEventService
+    private deviceTypeFilterChangedEventService: DeviceTypeFilterChangedEventService,
+    private devicePageNumberChangedEventService: DevicePageNumberChangedEventService,
+    private deviceCountChangedEventService: DeviceCountChangedEventService,
+    private deviceTotalChangedEventService: DeviceTotalChangedEventService,
   ) {}
 
   ngOnInit(): void {
     this.subscriptions.add(
-      this.deviceTypeFilterChangedEventService.deviceTypeFilterChangedEvent$.subscribe(
-        filter => this.showDevices.next({ ...this.lastRequest, filter })
+      combineLatest([
+        this.deviceCountChangedEventService.deviceCountChangedEvent$,
+        this.devicePageNumberChangedEventService.devicePageNumberChangedEvent$,
+        this.deviceTypeFilterChangedEventService.deviceTypeFilterChangedEvent$,
+      ]).subscribe(([count, pageNumber, filter]) => this.showDevices.next({ count, pageNumber, filter })
       )
     );
   }

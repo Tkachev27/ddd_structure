@@ -5,7 +5,7 @@ import { Device, DeviceRequest, getDevices } from '../../../backend';
 
 @Injectable()
 export class GetDevicesApiService {
-  getDevices(request: DeviceRequest): Observable<Device[]> {
+  getDevices(request: DeviceRequest): Observable<{ devices: Device[], total: number }> {
     return getDevices(request);
   }
 }

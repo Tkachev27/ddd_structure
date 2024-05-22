@@ -12,6 +12,10 @@ import { DeviceTypeFilterChangedEventService } from './event-services/device-typ
 import { SelectedDevicesService } from './use-cases/select-device/selected-devices.service';
 import { NetworkRoutingModule } from './network-router.module';
 import { NetworkNavigationService } from './network-navigation.service';
+import { PaginateDevicesComponent } from './use-cases/paginate-devices/paginate-devices.component';
+import { DevicePageNumberChangedEventService } from './event-services/device-page-number-changed-event.service';
+import { DeviceCountChangedEventService } from './event-services/device-count-changed-event.service';
+import { DeviceTotalChangedEventService } from './event-services/device-total-changed-event.service';
 
 @NgModule({
   declarations: [
@@ -19,7 +23,8 @@ import { NetworkNavigationService } from './network-navigation.service';
     FilterDevicesComponent,
     SelectDeviceComponent,
     ShowDevicesComponent,
-    ShowSelectedDevicesComponent
+    ShowSelectedDevicesComponent,
+    PaginateDevicesComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +35,10 @@ import { NetworkNavigationService } from './network-navigation.service';
     GetDevicesApiService,
     GetDevicesService,
     DeviceTypeFilterChangedEventService,
-    NetworkNavigationService],
+    NetworkNavigationService,
+    DevicePageNumberChangedEventService,
+    DeviceCountChangedEventService,
+    DeviceTotalChangedEventService,
+  ],
 })
 export class NetworkModule { }
