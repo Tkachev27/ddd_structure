@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { Device } from 'src/backend';
-import { SelectedDevicesService } from './selected-devices.service';
+import { SelectedDevicesService } from '../../data-services/selected-devices.service';
 
 @Component({
   selector: 'app-select-device',

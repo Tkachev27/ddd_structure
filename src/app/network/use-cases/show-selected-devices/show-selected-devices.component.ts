@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SelectedDevicesService } from '../select-device/selected-devices.service';
+import { SelectedDevicesService } from '../../data-services/selected-devices.service';
 
 @Component({
   selector: 'app-show-selected-devices',

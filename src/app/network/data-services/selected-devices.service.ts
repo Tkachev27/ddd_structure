@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Device } from 'src/backend';
-import { DeviceTypeFilterChangedEventService } from '../../event-services/device-type-filter-changed-event.service';
+import { DeviceTypeFilterChangedEventService } from './../event-services/device-type-filter-changed-event.service';
 
 @Injectable()
 export class SelectedDevicesService {

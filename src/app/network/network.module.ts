@@ -9,7 +9,7 @@ import { ShowSelectedDevicesComponent } from './use-cases/show-selected-devices/
 import { GetDevicesApiService } from './data-services/get-devices-api.service';
 import { GetDevicesService } from './data-services/get-devices.service';
 import { DeviceTypeFilterChangedEventService } from './event-services/device-type-filter-changed-event.service';
-import { SelectedDevicesService } from './use-cases/select-device/selected-devices.service';
+import { SelectedDevicesService } from './data-services/selected-devices.service';
 import { NetworkRoutingModule } from './network-router.module';
 import { NetworkNavigationService } from './network-navigation.service';
 import { PaginateDevicesComponent } from './use-cases/paginate-devices/paginate-devices.component';
